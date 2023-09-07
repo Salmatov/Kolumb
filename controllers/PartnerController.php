@@ -4,9 +4,8 @@ namespace app\controllers;
 
 use app\models\Partners;
 use Yii;
-use yii\web\Response;
 
-class FormController extends RestController
+class PartnerController extends RestController
 {
 
 
@@ -28,14 +27,9 @@ class FormController extends RestController
 
     }
 
-    public function actionPartnerById(){
-        $requestData = json_decode(Yii::$app->request->getRawBody(), true);
-        $idPartner = $requestData['id'];
+    public function actionPartnerById($id){
+        $idPartner = $id;
         return Partners::getPartnersById($idPartner);
     }
 
-
-    public function actionsFindPartnerByName($nameSnippet){
-
-    }
 }

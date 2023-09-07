@@ -17,6 +17,14 @@ class Partners extends ActiveRecord
     }
 
 
+    public static function getPartnersById($id){
+        return self::find()
+            ->where(['id' =>$id])
+            ->one();
+
+    }
+
+
     public static function setPartner($name,$address,$phone){
         $partner = new Partners();
         $partner->name=$name;
@@ -24,4 +32,5 @@ class Partners extends ActiveRecord
         $partner->phone=$phone;
         $partner->save();
     }
+
 }
