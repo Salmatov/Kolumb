@@ -49,8 +49,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                //'<controllers>/' =>'<controllers>',
-                //'<controllers>/<id:\d+>' =>'api/<controllers>/view',
+                '<controllers>/<action>/<id:\d+>' =>'<controllers>/<action>',
 
             ],
         ],
