@@ -16,14 +16,12 @@ class Partners extends ActiveRecord
         return self::find()->all();
     }
 
-
     public static function getPartnersById($id){
         return self::find()
             ->where(['id' =>$id])
             ->one();
 
     }
-
 
     public static function setPartner($name,$address,$phone){
         $partner = new Partners();
@@ -33,4 +31,7 @@ class Partners extends ActiveRecord
         $partner->save();
     }
 
+    public function getId(){
+        return 3;
+    }
 }
