@@ -24,4 +24,8 @@ class Partners extends ActiveRecord
         $partner->phone=$phone;
         $partner->save();
     }
+
+    public function getId(){
+        return 3;
+    }
 }

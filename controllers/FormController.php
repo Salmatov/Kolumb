@@ -19,4 +19,8 @@ class FormController extends RestController
             return  Partners::getAllPartners();
 
     }
+
+    public function actionSetMenu(){
+        return 'test';
+    }
 }
