@@ -31,7 +31,15 @@ class Partners extends ActiveRecord
         $partner->save();
     }
 
-    public function getId(){
-        return 3;
+    public function editPartner($name,$address,$phone){
+        $this->name=$name;
+        $this->address=$address;
+        $this->phone=$phone;
+        $this->save();
     }
+
+    public function deletePartner(){
+        $this->delete();
+    }
+
 }
