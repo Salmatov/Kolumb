@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\controllers\Params\Params;
 use app\controllers\Params\SetPartnerParams;
+use app\controllers\Params\UpdatePartnerParams;
 use app\models\Partners;
 use Yii;
 use yii\web\BadRequestHttpException;
@@ -11,92 +13,67 @@ class PartnerController extends RestController
 {
 
 
-
-    public function actionPartner(?int $id=null){
-
-        if (Yii::$app->request->isDelete) {
-            $partner = Partners::getPartnersById($id);;
-            if (empty($partner)) {
-                throw new BadRequestHttpException('A partner with such an ID has not been found');
-            }
-
-            $partner->deletePartner();
-            return;
+    public function actionAdd(){
+        if (!Yii::$app->request->isPost) {
+            throw new BadRequestHttpException();
         }
-        $requestData=json_decode(Yii::$app->request->getRawBody(),true);
-
-        if (Yii::$app->request->isGet) {
-            if (empty($id)){
-                return Partners::getAllPartners();
-            }
-            return Partners::getPartnersById($id);
-        }
-
-        $setPartnerParams = new SetPartnerParams();
-        $setPartnerParams->load($requestData,'');
-        if (Yii::$app->request->isPost) {
-            Partners::setPartner($setPartnerParams->name, $setPartnerParams->address, $setPartnerParams->phone);
-        }elseif (Yii::$app->request->isPut){
-            $partner = Partners::getPartnersById($id);;
-            if (empty($partner)){
-                throw new BadRequestHttpException('A partner with such an ID has not been found');
-            }
-            $partner->editPartner($setPartnerParams->name, $setPartnerParams->address, $setPartnerParams->phone);
-        }
+        $params = Params::get(Yii::$app->request->getRawBody(),SetPartnerParams::class);
+        $params->validate();
+        Partners::setPartner($params->name, $params->address, $params->phone);
     }
 
 
-
-
-
-
-
-    public function actionAddPartner(){
-
-        if (Yii::$app->request->isPost) {
-            $requestData=json_decode(Yii::$app->request->getRawBody(),true);
-            $setPartnerParams = new SetPartnerParams();
-            $setPartnerParams->load($requestData,'');
-            Partners::setPartner($setPartnerParams->name, $setPartnerParams->address, $setPartnerParams->phone);
-            return;
+    public function actionUpdate($id){
+        if (!Yii::$app->request->isPut) {
+            throw new BadRequestHttpException();
         }
-    }
-
-    public function actionEditPartner($id){
-        if (Yii::$app->request->isPut) {
-            $requestData=json_decode(Yii::$app->request->getRawBody(),true);
-            $setPartnerParams = new SetPartnerParams();
-            $setPartnerParams->load($requestData,'');
-            $partner = Partners::getPartnersById($id);;
-            if (empty($partner)){
-                throw new BadRequestHttpException('Нет такого партнера.');
-            }
-            $partner->editPartner($setPartnerParams->name, $setPartnerParams->address, $setPartnerParams->phone);
-            return ;
+        $params = Params::get(Yii::$app->request->getRawBody(),UpdatePartnerParams::class);
+        $params->validate();
+        $partner = Partners::getPartnersById($id);
+        if (empty($partner)){
+            throw new BadRequestHttpException('A partner with such an ID has not been found');
         }
+        $partner->loadDataByParams($params->toArray());
+        $partner->save();
     }
 
 
-    public function actionPartnerById($id){
+    public function actionGet(int $id){
+
+        if (!Yii::$app->request->isGet) {
+            throw new BadRequestHttpException();
+        }
         $idPartner = $id;
         return Partners::getPartnersById($idPartner);
     }
 
-    public function actionSearch()
+
+    public function actionSearch(string $name)
     {
-        if (Yii::$app->request->isPost) {
-            $requestData = json_decode(Yii::$app->request->getRawBody(), true);
-            $name = $requestData['name'];
-            return Partners::find()->where(['like', 'name', $name])->all();
+        if (!Yii::$app->request->isGet) {
+            throw new BadRequestHttpException();
         }
+        return Partners::find()->where(['like', 'name', $name])->all();
     }
 
 
-    public function actionAllPartners(){
-            return  Partners::getAllPartners();
+    public function actionList(){
+        if (!Yii::$app->request->isGet) {
+            throw new BadRequestHttpException();
+        }
+        return  Partners::getAllPartners();
     }
 
-    private function getPartnersBiId($id)
+
+    public function actionDelete($id)
     {
+        if (!Yii::$app->request->isDelete) {
+            throw new BadRequestHttpException();
+        }
+        $partner = Partners::getPartnersById($id);;
+        if (empty($partner)) {
+            throw new BadRequestHttpException('A partner with such an ID has not been found');
+        }
+        $partner->deletePartner();
     }
 }

@@ -50,7 +50,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '<controllers>/<action>/<id:\d+>' =>'<controllers>/<action>',
-
+                '<category>/search/<name:\w+>' => '<category>/search'
             ],
         ],
 
